@@ -1,19 +1,16 @@
 const express = require("express");
 const app = express();
-const http = require("http");
-const server = http.createServer(app);
-const { Server } = require("socket.io");
-const io = new Server(server);
-
-app.get("/", (req, res) => {
-  res.sendFile(__dirname + "/index.html");
-});
-
+const cors = require("cors");
+const http = require("http").createServer(app);
+const io = require("socket.io")(http);
+app.use(cors());
+app.options("*", cors()); // enable pre-flight
 io.on("connection", (socket) => {
-  socket.on("chat message", (msg) => {
-    io.emit("chat message", msg);
+  socket.on("message", ({ name, message }) => {
+    io.emit("message", { name, message });
   });
 });
-server.listen(3000, () => {
-  console.log("listening on *:3000");
+
+http.listen(4000, function () {
+  console.log("listening on port 4000");
 });
