@@ -13,23 +13,19 @@ function App() {
 
   useEffect(() => {
     console.log("rendering");
-    return () => {
-      return;
-    };
-  }, [chat]);
+    socket.on("message", ({ name, message }) => {
+      setChat([...chat, { name, message }]);
+    });
+  });
   const onTextChange = (e) => {
     setState({ ...state, [e.target.name]: e.target.value });
   };
 
-  const onMessageSubmit = async (e) => {
+  const onMessageSubmit = (e) => {
     e.preventDefault();
     const { message } = state;
     socket.emit("message", { name: user, message });
     setState({ message: "" });
-    await socket.on("message", ({ name, message }) => {
-      let allchats = [...chat, { name, message }];
-      setChat(allchats);
-    });
   };
 
   const renderChat = () => {
@@ -37,8 +33,9 @@ function App() {
       <div
         style={{
           overflowY: "auto",
-          minHeight: "70vh",
-          maxHeight: "70vh",
+          minHeight: "60vh",
+          maxHeight: "60vh",
+          marginBottom: "10px",
         }}
       >
         {chat.map(({ name, message }, index) => (
@@ -89,12 +86,13 @@ function App() {
                 onChange={onTextChange}
                 id="outlined-multiline-static"
               />
-              <button
-                className="btn btn-success"
-                id="basic-addon2"
-                type="submit"
-              >
-                Send
+              <button className="btn btn-info" id="basic-addon2" type="submit">
+                <img
+                  src="https://upload.wikimedia.org/wikipedia/commons/0/0c/Message_%28Send%29.png"
+                  alt="Send"
+                  height="30px"
+                  width="35px"
+                />
               </button>
             </div>
           </form>
