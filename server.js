@@ -22,6 +22,7 @@ io.on("connection", (socket) => {
   });
 });
 
-http.listen(4000, function () {
-  console.log("listening on port 4000");
+const PORT = process.env.PORT || 4000;
+http.listen(PORT, () => {
+  console.log(`Server listening on ${PORT}`);
 });
